@@ -1,4 +1,4 @@
-import pygame, os, random, time, datetime, sys, re
+import pygame, os, random, time, datetime, sys, re, tkinter as tk, thread
 
 # TODO max tijd om af te spelen
 
@@ -148,7 +148,38 @@ def playSounds():
                 print("playing: {}".format(sound))
                 break
 
+""" Part 4: Visual feedback & cancel """
+
+
+def showMessageBox(message):
+    
+    def cancel():
+        print("Alarm cancelled") # TODO alarm hiermee stoppen
+        root.destroy()
+        exitProgram()
+        
+    # TODO message box niet onderbrekend
+    
+    root = tk.Tk()
+    root.title("RasPi Alarm")
+    
+    msg = tk.Label(root, padx = 30, pady = 50, text = message)
+    msg.pack()
+    
+    cancel = tk.Button(root, padx = 10, pady = 10, text = "Cancel Alarm", command = cancel)
+    cancel.pack()
+    
+    root.mainloop()
+    
+def exitProgram():
+    raise SystemExit
+
+
+""" Run """
+
 try:
+    input()
+    showMessageBox("Alarm is set at {}".format(__alarmtime))
     
     if input():
         initMixer()
@@ -166,8 +197,8 @@ try:
     #else:
         
     
-except KeyboardInterrupt:
-    pygame.mixer.stop() # ctrl - c voor afsluiten
+except (KeyboardInterrupt, SystemExit):
+    #pygame.mixer.stop() # ctrl - c voor afsluiten
     print("afspelen gestopt")
 
 
