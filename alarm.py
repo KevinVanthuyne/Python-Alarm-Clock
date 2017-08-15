@@ -1,11 +1,28 @@
-import pygame, os, random, time, datetime
+import pygame, os, random, time, datetime, sys, re
 
-__alarmtime = '22:11' # HH:MM
+# TODO max tijd om af te spelen
+
+__alarmtime = '' # HH:MM
 __path_to_sounds = 'sounds' #folder containing sounds
-__fade_in = 60000 # milliseconds to fade in sound
+__fade_in = 10000 # milliseconds to fade in sound
 __blacklist = ['instruments', 'other folder'] # folders with sounds not to start with (don't include main folder)
 
-""" Part 1: alarm """ 
+""" Part 1: input """
+
+def input():
+    # TODO controle op input
+    global __alarmtime
+    input = sys.argv[1]
+    
+    if not re.match(r'^..:..$', input):
+        print("Invalid input. Has to be HH:MM")
+        return False
+    else:
+        __alarmtime = input
+        return True
+    
+
+""" Part 2: alarm """
 
 def howLong(alarmtime):
     """ returns timedelta until given time. Format HH:MM
@@ -37,7 +54,7 @@ def howLong(alarmtime):
     return   time_to_alarm   
     
 
-""" Part 2: sound """
+""" Part 3: sound """
 
 def initMixer():
     pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer
@@ -119,7 +136,7 @@ def playSounds():
     for i in range(len(files)): # for the number of selected sounds
         
         if i != 0: # first sounds plays immediately, other sounds start later (randomly)
-            wait = random.randint(30,60) # seconds to wait
+            wait = random.randint(10,20) # seconds to wait
             time.sleep(wait)
         
         while True: # "do ... while" to make sure sound isn't already selected
@@ -132,19 +149,27 @@ def playSounds():
                 break
 
 try:
-    initMixer()
-    # determine time to sleep and sleep until alarm time
-    wait = howLong(__alarmtime).seconds
-    time.sleep(wait)
-    # make alarm go off
-    print("Time to wake up!")
-    playSounds()
-    print("")
     
-    while pygame.mixer.get_busy():
-        print("afspelen")
-        time.sleep(5)
+    if input():
+        initMixer()
+        # determine time to sleep and sleep until alarm time
+        wait = howLong(__alarmtime).seconds
+        time.sleep(wait)
+        # make alarm go off
+        print("Time to wake up!")
+        playSounds()
+        print("")
+        
+        while pygame.mixer.get_busy():
+            print("afspelen")
+            time.sleep(5)
+    #else:
+        
     
 except KeyboardInterrupt:
     pygame.mixer.stop() # ctrl - c voor afsluiten
     print("afspelen gestopt")
+
+
+
+
