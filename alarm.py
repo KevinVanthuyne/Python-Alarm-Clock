@@ -11,26 +11,46 @@ import threading
 """ A Raspberry Pi powered alarm clock that wakes you up with
     a random selection of nature sounds """
 
-class Alarm:
+class Alarm():
 
     # TODO max tijd om af te spelen
 
     def __init__(self, alarmtime, path_to_sounds, fade_in, blacklist):
         # self.__alarmtime = alarmtime  # HH:MM
+
         self.set_alarmtime(alarmtime)
         self.__path_to_sounds = path_to_sounds  # folder containing sounds
         self.__fade_in = fade_in  # milliseconds to fade in sounds
         self.__blacklist = blacklist  # folders with sounds not to start with (don't include main folder)
 
-    """ Setters """
+        # check if flag-file to cancel alarm exists and removes it if needed
+        if (os.path.isfile("cancel_alarm")):
+            os.remove("cancel_alarm")
+
+
+
+    """ Setters & getters """
 
     def set_alarmtime(self, alarmtime):
         if not re.match(r'^\d\d:\d\d$', alarmtime):
             raise ValueError("Invalid alarmtime input. Has to be HH:MM")
             return False
         else:
-            self.__alarmtime = alarmtime
+            # makes a datetime object from string as formatted
+            self.__alarmtime = datetime.datetime.strptime(alarmtime, '%H:%M')
+            # converts datetime object in time object
+            self.__alarmtime = datetime.time(getattr(self.__alarmtime, 'hour'), getattr(self.__alarmtime, 'minute'))
+
+            print("Current time: {}".format(self.now()))
+            print("Alarm time: {}".format(self.__alarmtime))
+
+            # TODO show difference in time (time -> datetime)
+            print("Alarm goes off in {placeholder}")
+
             return True
+
+    def get_alarmtime(self):
+        return self.__alarmtime
 
 
     """ Alarm """
@@ -39,30 +59,36 @@ class Alarm:
         """ returns amount of seconds from now until alarmtime.
             source used: https://pastebin.com/GLL6L2B8     """
 
-        now = datetime.datetime.now()  # current date & time
+        # now = datetime.datetime.now()  # current date & time
+        #
+        # current_date = datetime.date(getattr(now, 'year'), getattr(now, 'month'), getattr(now, 'day'))
+        # current_time = datetime.time(getattr(now, 'hour'), getattr(now, 'minute'))
+        # print("Current time: {} {}".format(current_date, current_time))
+        #
+        # self.__alarmtime = datetime.datetime.strptime(self.__alarmtime, '%H:%M') # makes a datetime object from string as formatted
+        # self.__alarmtime = datetime.time(getattr(self.__alarmtime, 'hour'), getattr(self.__alarmtime, 'minute')) # converts datetime object in time object
+        #
+        # alarmdatetime = datetime.datetime.combine(current_date, self.__alarmtime) # make alarm datetime object with current date and alarmtime
+        #
+        # # DEBUG to make alarm go off immediately
+        # if self.__alarmtime == current_time:
+        #     return 0
+        #
+        # if self.__alarmtime < current_time: # if alarmtime before current time, set alarm for next day
+        #     alarmdatetime += datetime.timedelta(hours=24)
+        #
+        # time_to_alarm = alarmdatetime - now
+        #
+        # print("Alarm time: {}".format(alarmdatetime))
+        # print("Alarm goes of in {} (h:m:s)\n".format(time.strftime('%H:%M:%S', time.gmtime(time_to_alarm.seconds))))
+        #
+        # return time_to_alarm.seconds
 
-        current_date = datetime.date(getattr(now, 'year'), getattr(now, 'month'), getattr(now, 'day'))
-        current_time = datetime.time(getattr(now, 'hour'), getattr(now, 'minute'))
-        print("Current time: {} {}".format(current_date, current_time))
+        return 5000
 
-        self.__alarmtime = datetime.datetime.strptime(self.__alarmtime, '%H:%M') # makes a datetime object from string as formatted
-        self.__alarmtime = datetime.time(getattr(self.__alarmtime, 'hour'), getattr(self.__alarmtime, 'minute')) # converts datetime object in time object
-
-        alarmdatetime = datetime.datetime.combine(current_date, self.__alarmtime) # make alarm datetime object with current date and alarmtime
-
-        # DEBUG to make alarm go off immediately
-        if self.__alarmtime == current_time:
-            return 0
-
-        if self.__alarmtime < current_time: # if alarmtime before current time, set alarm for next day
-            alarmdatetime += datetime.timedelta(hours=24)
-
-        time_to_alarm = alarmdatetime - now
-
-        print("Alarm time: {}".format(alarmdatetime))
-        print("Alarm goes of in {} (h:m:s)\n".format(time.strftime('%H:%M:%S', time.gmtime(time_to_alarm.seconds))))
-
-        return time_to_alarm.seconds
+    def now(self):
+        now = datetime.datetime.now()
+        return datetime.time(getattr(now, 'hour'), getattr(now, 'minute'))
 
 
     """ Part 3: sound """
