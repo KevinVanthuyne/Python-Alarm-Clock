@@ -181,6 +181,3 @@ class Alarm():
                     pygame.mixer.Sound(sound).play(loops=-1, fade_ms=self.__fade_in) # play sound on loop with fade in on start
                     print("playing: {}".format(sound))
                     break
-
-    def exit_program():
-        raise SystemExit
