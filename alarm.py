@@ -27,7 +27,7 @@ def input():
         print("Invalid input. Has to be HH:MM")
         return False
     else:
-        __alarmtime = input
+        __alarmtime = input_time
         return True
 
 
@@ -170,7 +170,7 @@ class MessageBox(threading.Thread):
 
     def __init__(self, alarmtime):
         threading.Thread.__init__(self)
-        self.alarmtime = __alarmtime
+        self.alarmtime = alarmtime
         self.daemon = True
         self.start()
 
@@ -198,7 +198,7 @@ def exitProgram():
 
 try:
     input()
-    MessageBox() # seperate thread for message dialog so alarm can continue running
+    MessageBox(__alarmtime) # seperate thread for message dialog so alarm can continue running
 
     if input():
         initMixer()
@@ -219,10 +219,6 @@ try:
 except (KeyboardInterrupt, SystemExit):
     #pygame.mixer.stop() # ctrl - c voor afsluiten
     print("afspelen gestopt")
-    
+
 except IndexError:
     print("Can't set alarm. Time needs to be given")
-
-
-
-
