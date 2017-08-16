@@ -30,8 +30,8 @@ def run():
 
         # check if alarmtime == current time or if flag file exists to cancel alarm
         while (alarm.now() != alarm.get_alarmtime() and not alarm.cancel_file_exists()):
-            print("sleeping until alarm...")
-            time.sleep(5)
+            # print("sleeping until alarm...")
+            time.sleep(1)
 
         # make alarm go off if flag file doesn't exist
         if not alarm.cancel_file_exists():
@@ -41,8 +41,8 @@ def run():
             print("")
 
             while mixer.get_busy() and not alarm.cancel_file_exists():
-                print("playing alarm...")
-                time.sleep(5)
+                # print("playing alarm...")
+                time.sleep(1)
 
 
 
