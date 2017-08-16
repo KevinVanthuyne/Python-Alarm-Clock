@@ -24,7 +24,7 @@ def run():
 
         # Show popup with when alarm is set and cancel option
         # Not needed when running from php/apache
-        popup = Popup(alarm.get_alarmtime())
+        # popup = Popup(alarm.get_alarmtime())
 
         # check if alarmtime == current time or if flag file exists to cancel alarm
         while (alarm.now() != alarm.get_alarmtime() and not alarm.cancel_file_exists()):
@@ -44,14 +44,8 @@ def run():
 
 
 
-    except (KeyboardInterrupt, SystemExit):
+    except (KeyboardInterrupt):
         # mixer.stop() # ctrl - c to stop alarm
-        try:
-            alarm.remove_cancel_file()
-            print("Deleted flag file")
-        except (NameError, FileNotFoundError):
-            print("No flag file to delete")
-
         print("--- Stopped alarm ---")
 
     except IndexError:
@@ -59,6 +53,18 @@ def run():
 
     except ValueError as err:
         print(err)
+
+    finally:
+        try:
+            alarm.remove_cancel_file()
+            print("Deleted flag file")
+        except (NameError, FileNotFoundError):
+            print("No flag file to delete")
+
+        try:
+            alarm.remove_alarm_file()
+        except (NameError, FileNotFoundError):
+            print("No alarm set file to delete")
 
 
 if __name__ == '__main__':

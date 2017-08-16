@@ -15,7 +15,7 @@
             height: 100vh;
             width: auto;
             overflow: hidden;
-            background-image: url(background-optimized-1920x1080.jpeg);
+            background-image: url(images/background-optimized-1920x1080.jpeg);
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-size: cover;
@@ -31,6 +31,11 @@
 
         h1 {
             font-size: 4em
+        }
+
+        a {
+            text-decoration: none;
+            color: white;
         }
 
         p, h1, label {
@@ -55,8 +60,16 @@
 
     <div id="background">
         <div id="wrapper">
-            <h1>Raspi Alarm Clock</h1>
+            <a href="index.php"><h1>Raspi Alarm Clock</h1></a>
             <?php
+                # if alarm file exists (an alarm is set)
+                # display the alarm time
+                if (file_exists("alarm_set")) {
+                    $alarm_file = fopen("alarm_set", "r");
+                    $alarm_time = fgets($alarm_file);
+                    echo("<p>Alarm is set at " . $alarm_time . "</p>");
+                    fclose($alarm_file);
+                }
                 // if there's an info message, print it
                 if (isset($_GET['info'])) {
                     echo("<p>" . $_GET['info'] . "<p>");
@@ -73,6 +86,8 @@
                     <input type="submit" name="send" value="Cancel alarm">
                 </p>
             </form>
+
+            <a href="index.php"><img src="images/icon-refresh-50.png" alt="refresh button"></a>
         </div>
     </div>
 </body>

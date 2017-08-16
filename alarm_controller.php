@@ -2,27 +2,33 @@
 
     $action = $_POST["send"];
     echo("action: ".$action."<br>");
-    $info;
+
+    // TODO check input from form
 
     // if action is cancel alarm, make cancel flag file
     if ($action == "Cancel alarm") {
         touch("cancel_alarm");
-        echo("Alarm cancelled!");
+
+        // sleep until cancel file is set and alarm file removed
+        while(file_exists("alarm_set")) {
+            sleep(1);
+        }
+
         $info = "Alarm cancelled!";
+        header("Location: index.php?info=" . $info);
     }
     elseif ($action == "Set alarm") {
         $alarmtime = $_POST["alarmtime"];
-        $cmd = "python3 /var/www/html/main.py " . $alarmtime;
-
-        echo "Command executed: " . $cmd . "<br>";
-        echo "Alarm is set at " . $alarmtime;
+        $cmd = "python3 /var/www/html/Python-Alarm-Clock/main.py " . $alarmtime;
 
         // run script, redirect output and error output to log file and run in background(&)
-        echo exec($cmd . " > /var/www/html/script.log 2>&1 &");
+        echo exec($cmd . " > /var/www/html/Python-Alarm-Clock/script.log 2>&1 &");
 
-        $info = "Alarm set!";
+        // sleep until alarm file is set
+        while(!file_exists("alarm_set")) {
+            sleep(1);
+        }
+        header("Location: index.php");
     }
-
-    header("Location: index.php?info=" . $info);
 
 ?>

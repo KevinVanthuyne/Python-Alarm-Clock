@@ -27,6 +27,7 @@ class Alarm():
         self.__wait = [10,20] # min and max seconds to wait to play next sound
         self.__blacklist = blacklist  # folders with sounds not to start with (don't include main folder)
 
+        self.make_alarm_file()
         # check if flag-file to cancel alarm exists and removes it if needed
         if (self.cancel_file_exists()):
             self.remove_cancel_file()
@@ -55,7 +56,6 @@ class Alarm():
 
     def get_alarmtime(self):
         return self.__alarmtime
-
 
     """ Alarm """
 
@@ -193,8 +193,26 @@ class Alarm():
                     print("playing: {}".format(sound))
                     break
 
+    """ Flag Files """
+
     def cancel_file_exists(self):
         return os.path.isfile("cancel_alarm")
 
     def remove_cancel_file(self):
         os.remove("cancel_alarm")
+
+    # Make a file with the alarmtime in it so
+    # the web interface can see when alarm is set
+    def make_alarm_file(self):
+        if os.path.isfile("alarm_set"):
+            raise ValueError("There's already an alarm set")
+
+        with open("alarm_set", 'w') as alarm_file:
+            # write alarmtime as HH:MM in file (drop the seconds)
+            alarm_file.write(str(self.__alarmtime).rsplit(':', 1)[0])
+
+        print("alarm file made")
+
+    def remove_alarm_file(self):
+        os.remove("alarm_set")
+        print("alarm file removed")
