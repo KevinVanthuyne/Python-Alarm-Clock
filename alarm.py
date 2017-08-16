@@ -16,15 +16,14 @@ class Alarm():
     # TODO maximum time to let alarm play
     # TODO debug check: play entire sound folder to check on errors
     # TODO overall volume fade-in
-    # TODO flag file "alarm_set" containing alarmtime to see when alarm is set
 
-    def __init__(self, alarmtime, path_to_sounds, fade_in, blacklist):
+    def __init__(self, alarmtime, path_to_sounds, fade_in, wait, blacklist):
         # self.__alarmtime = alarmtime  # HH:MM
 
         self.set_alarmtime(alarmtime)
         self.__path_to_sounds = path_to_sounds  # folder containing sounds
         self.__fade_in = fade_in  # milliseconds to fade in sounds
-        self.__wait = [10,20] # min and max seconds to wait to play next sound
+        self.__wait = wait # min and max seconds to wait to play next sound
         self.__blacklist = blacklist  # folders with sounds not to start with (don't include main folder)
 
         self.make_alarm_file()

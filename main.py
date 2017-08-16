@@ -17,10 +17,11 @@ def run():
         __alarmtime = ''
         __path_to_sounds = 'sounds'
         __fade_in = 10000
+        __wait = [10,20]
         __blacklist = ['instruments', 'other folder']
 
         input_time = sys.argv[1]  # get alarmtime from command line
-        alarm = Alarm(input_time, __path_to_sounds, __fade_in, __blacklist) # seperate thread for message dialog so alarm can continue running
+        alarm = Alarm(input_time, __path_to_sounds, __fade_in, __wait, __blacklist) # seperate thread for message dialog so alarm can continue running
 
         # Show popup with when alarm is set and cancel option
         # Not needed when running from php/apache
