@@ -25,7 +25,7 @@
     elseif ($action == "Set alarm") {
         $alarmtime = $_POST["alarmtime"];
         // if the input is a valid time 00:00 - 23:59
-        if (preg_match("([01]?[0-9]|2[0-3]):[0-5][0-9]", $alarmtime)) {
+        if (preg_match("/([01]?[0-9]|2[0-3]):[0-5][0-9]/", $alarmtime)) {
             $cmd = "python3 /var/www/html/Python-Alarm-Clock/main.py " . $alarmtime;
 
             // run script, redirect output and error output to log file and run in background(&)
