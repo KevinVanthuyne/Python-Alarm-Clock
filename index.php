@@ -31,7 +31,8 @@
         }
 
         h1 {
-            font-size: 4em
+            font-size: 4em;
+            text-shadow: 0 0 3px black;
         }
 
         a {
@@ -39,12 +40,9 @@
             color: white;
         }
 
-        p, h1, label {
-            text-shadow: 0 0 5px black;
-        }
-
         p, label {
             font-size: 1.7em;
+            text-shadow: 0 0 3px black;
         }
 
         input {
@@ -77,7 +75,7 @@
                 }
             ?>
             <form action="alarm_controller.php" method="post">
-                <label for="alarmtime">Alarm time: </label><input name="alarmtime" id="alarmtime" type="time" required >
+                <label for="alarmtime">Alarm time: </label><input name="alarmtime" id="alarmtime" type="time" required>
                 <p>
                     <input type="submit" name="send" value="Set alarm">
                 </p>
