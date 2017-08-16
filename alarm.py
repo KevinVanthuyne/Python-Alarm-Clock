@@ -17,7 +17,7 @@ class Alarm():
     # TODO debug check: play entire sound folder to check on errors
     # TODO overall volume fade-in
 
-    def __init__(self, alarmtime, path_to_sounds, fade_in, wait, blacklist):
+    def __init__(self, alarmtime, path_to_sounds, fade_in, wait, blacklist, max_sounds):
         # self.__alarmtime = alarmtime  # HH:MM
 
         self.set_alarmtime(alarmtime)
@@ -25,6 +25,7 @@ class Alarm():
         self.__fade_in = fade_in  # milliseconds to fade in sounds
         self.__wait = wait # min and max seconds to wait to play next sound
         self.__blacklist = blacklist  # folders with sounds not to start with (don't include main folder)
+        self.__max_sounds = max_sounds  # maximum number of sounds to play together
 
         self.make_alarm_file()
         # check if flag-file to cancel alarm exists and removes it if needed
@@ -122,23 +123,28 @@ class Alarm():
         return structure
 
     def select_random_files(self):
-        """ selects 1 random sound per folder """
+        """ selects 1 random sound per folder, with a maximum of <__max_sounds> sounds """
 
         all_files = self.get_files(self.__path_to_sounds)
-        # number = random.randint(1, len(all_files)) # random number of sounds between 1 and all sounds
-        # print("Number of sounds chosen: {}".format(number))
 
+        one_file_per_folder = []
         selected_files = []
 
-        for i in range(0, len(all_files)): # for every folder
-            while True: # "do ... while" to make sure sound isn't already selected
-                file = random.choice(all_files[i])
+        # select one random sound per folder
+        for i in range(0, len(all_files)):
+            #while True: # "do ... while" to make sure sound isn't already selected
+            file = random.choice(all_files[i])
+            one_file_per_folder.append(file)
 
-                if file not in selected_files:
-                    selected_files.append(file)
-                    print("selected file: {}".format(file))
-                    break
+        # randomly select max number of sounds from all sounds
+        for i in range(0, self.__max_sounds):
+            file = random.choice(one_file_per_folder)
+            selected_files.append(file)
+            print("Selected file: {}".format(file))
 
+            one_file_per_folder.remove(file) # remove from list so same file doesn't get picked
+
+        print("File not chosen: {}".format(one_file_per_folder))
         print("")
         return selected_files
 
