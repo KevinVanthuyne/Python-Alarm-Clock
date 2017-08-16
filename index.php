@@ -5,6 +5,7 @@
     <title>Alarm Clock</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="icon" href="images/alarm_clock128.png">
     <style>
         body {
             margin: 0;
