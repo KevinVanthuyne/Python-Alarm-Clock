@@ -184,7 +184,7 @@ class Alarm():
                 # check every second while waiting if alarm is cancelled
                 s = 0
                 while s < wait and not self.cancel_file_exists():
-                    time.sleep(s)
+                    time.sleep(1)
                     s += 1
 
             # "do ... while" to make sure sound isn't already selected

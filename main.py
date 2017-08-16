@@ -16,7 +16,7 @@ def run():
 
         __alarmtime = ''
         __path_to_sounds = 'sounds'
-        __fade_in = 30000
+        __fade_in = 60000
         __wait = [30,60]
         __blacklist = ['instruments', 'other folder']
         __max_sounds = 5
@@ -57,6 +57,7 @@ def run():
         print(err)
 
     finally:
+        mixer.quit()
         try:
             alarm.remove_cancel_file()
             print("Deleted flag file")
