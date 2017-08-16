@@ -23,21 +23,22 @@ def run():
         alarm = Alarm(input_time, __path_to_sounds, __fade_in, __blacklist) # seperate thread for message dialog so alarm can continue running
 
         # Show popup with when alarm is set and cancel option
+        # Not needed when running from php/apache
         popup = Popup(alarm.get_alarmtime())
 
         # check if alarmtime == current time or if flag file exists to cancel alarm
-        while (alarm.now() != alarm.get_alarmtime() and not os.path.isfile("cancel_alarm")):
+        while (alarm.now() != alarm.get_alarmtime() and not alarm.cancel_file_exists()):
             print("sleeping until alarm...")
-            time.sleep(1)
+            time.sleep(5)
 
         # make alarm go off if flag file doesn't exist
-        if not os.path.isfile("cancel_alarm"):
+        if not alarm.cancel_file_exists():
             print("Time to wake up!")
             alarm.init_mixer()
             alarm.play_sounds()
             print("")
 
-            while mixer.get_busy():
+            while mixer.get_busy() and not alarm.cancel_file_exists():
                 print("playing alarm...")
                 time.sleep(5)
 
@@ -46,7 +47,7 @@ def run():
     except (KeyboardInterrupt, SystemExit):
         # mixer.stop() # ctrl - c to stop alarm
         try:
-            os.remove("cancel_alarms")
+            alarm.remove_cancel_file()
             print("Deleted flag file")
         except (NameError, FileNotFoundError):
             print("No flag file to delete")

@@ -13,7 +13,10 @@ import threading
 
 class Alarm():
 
-    # TODO max tijd om af te spelen
+    # TODO maximum time to let alarm play
+    # TODO debug check: play entire sound folder to check on errors
+    # TODO overall volume fade-in
+    # TODO flag file "alarm_set" containing alarmtime to see when alarm is set
 
     def __init__(self, alarmtime, path_to_sounds, fade_in, blacklist):
         # self.__alarmtime = alarmtime  # HH:MM
@@ -21,11 +24,12 @@ class Alarm():
         self.set_alarmtime(alarmtime)
         self.__path_to_sounds = path_to_sounds  # folder containing sounds
         self.__fade_in = fade_in  # milliseconds to fade in sounds
+        self.__wait = [10,20] # min and max seconds to wait to play next sound
         self.__blacklist = blacklist  # folders with sounds not to start with (don't include main folder)
 
         # check if flag-file to cancel alarm exists and removes it if needed
-        if (os.path.isfile("cancel_alarm")):
-            os.remove("cancel_alarm")
+        if (self.cancel_file_exists()):
+            self.remove_cancel_file()
 
 
 
@@ -170,10 +174,17 @@ class Alarm():
         for i in range(len(files)): # for the number of selected sounds
 
             if i != 0: # first sounds plays immediately, other sounds start later (randomly)
-                wait = random.randint(10,20) # seconds to wait
-                time.sleep(wait)
+                wait = random.randint(self.__wait[0],self.__wait[1]) # seconds to wait to play next sound
 
-            while True: # "do ... while" to make sure sound isn't already selected
+                # check every second while waiting if alarm is cancelled
+                s = 0
+                while s < wait and not self.cancel_file_exists():
+                    time.sleep(s)
+                    s += 1
+
+            # "do ... while" to make sure sound isn't already selected
+            # and check if flag file doesn't exist (sleep needs to finish before check can exit loop)
+            while True and not self.cancel_file_exists():
                 sound = random.choice(files)
 
                 if sound not in playing and not (i == 0 and self.in_blacklist(sound)):
@@ -181,3 +192,9 @@ class Alarm():
                     pygame.mixer.Sound(sound).play(loops=-1, fade_ms=self.__fade_in) # play sound on loop with fade in on start
                     print("playing: {}".format(sound))
                     break
+
+    def cancel_file_exists(self):
+        return os.path.isfile("cancel_alarm")
+
+    def remove_cancel_file(self):
+        os.remove("cancel_alarm")
