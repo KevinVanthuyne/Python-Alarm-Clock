@@ -7,6 +7,7 @@ import sys
 import re
 import tkinter as tk
 import threading
+import signal
 
 """ A Raspberry Pi powered alarm clock that wakes you up with
     a random selection of nature sounds """
@@ -17,7 +18,7 @@ class Alarm():
     # TODO debug check: play entire sound folder to check on errors
     # TODO overall volume fade-in
 
-    def __init__(self, alarmtime, path_to_sounds, fade_in, wait, blacklist, max_sounds):
+    def __init__(self, alarmtime, path_to_sounds, fade_in, wait, blacklist, max_sounds, max_time):
         # self.__alarmtime = alarmtime  # HH:MM
 
         self.set_alarmtime(alarmtime)
@@ -26,6 +27,7 @@ class Alarm():
         self.__wait = wait # min and max seconds to wait to play next sound
         self.__blacklist = blacklist  # folders with sounds not to start with (don't include main folder)
         self.__max_sounds = max_sounds  # maximum number of sounds to play together
+        self.__max_time = max_time  # maximum amount of seconds the alarm plays
 
         self.make_alarm_file()
         # check if flag-file to cancel alarm exists and removes it if needed
@@ -167,6 +169,10 @@ class Alarm():
     def play_sounds(self):
         """ plays 1 sound, waits some time then adds the next until all sounds are playing """
 
+        # Stops alarm when max_time is reached
+        signal.signal(signal.SIGALRM, self.max_time_handler)
+        signal.alarm(self.__max_time)
+
         files = self.select_random_files()
         playing = [] # sounds already playing
 
@@ -198,10 +204,20 @@ class Alarm():
                     print("playing: {}".format(sound))
                     break
 
+    # Stops alarm when max_time is reached
+    def max_time_handler(self, signum, frame):
+        self.make_cancel_file()
+
+    def stop_max_time_signal(self):
+        signal.alarm(0)
+
     """ Flag Files """
 
     def cancel_file_exists(self):
         return os.path.isfile("cancel_alarm")
+
+    def make_cancel_file(self):
+        open("cancel_alarm", "w").close()
 
     def remove_cancel_file(self):
         os.remove("cancel_alarm")
