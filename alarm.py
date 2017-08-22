@@ -176,6 +176,9 @@ class Alarm():
         signal.signal(signal.SIGALRM, self.max_time_handler)
         signal.alarm(self.__max_time)
 
+        # Enables relay to power amplifier
+        self.enable_relay()
+
         files = self.select_random_files()
         playing = [] # sounds already playing
 
@@ -256,7 +259,12 @@ class Alarm():
         self.gpio.set_mode(18, pigpio.INPUT)
         self.gpio.set_pull_up_down(18, pigpio.PUD_UP)
 
+        # Pin 2 is connected to relay
+        self.gpio.set_mode(2, pigpio.OUTPUT)
+        # hoog zetten?
+
     def cleanup_button(self):
+        self.disable_relay()
         self.gpio.stop()
 
     def is_button_pressed(self):
@@ -268,3 +276,13 @@ class Alarm():
             return True
 
         return False
+
+    # Relay is active low
+    def enable_relay(self):
+        self.gpio.write(2, 0)
+
+    def disable_relay(self):
+        self.gpio.write(2, 1)
+
+    def toggle_relay(self):
+        self.gpio.write(2, not self.gpio.read(2))
