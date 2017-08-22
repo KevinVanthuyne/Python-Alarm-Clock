@@ -3,7 +3,6 @@ import os
 import time
 import threading
 import datetime
-import RPi.GPIO as GPIO
 from pygame  import mixer
 
 from alarm import Alarm

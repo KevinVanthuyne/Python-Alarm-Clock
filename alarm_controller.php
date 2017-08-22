@@ -40,6 +40,7 @@
                 while(!file_exists("alarm_set")) {
                     sleep(1);
                 }
+                // echo($alarmtime);
                 header("Location: index.php");
             }
             // if the input is invalid

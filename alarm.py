@@ -8,7 +8,7 @@ import re
 import tkinter as tk
 import threading
 import signal
-import RPi.GPIO as GPIO
+import pigpio
 
 """ A Raspberry Pi powered alarm clock that wakes you up with
     a random selection of nature sounds """
@@ -29,6 +29,8 @@ class Alarm():
         self.__blacklist = blacklist  # folders with sounds not to start with (don't include main folder)
         self.__max_sounds = max_sounds  # maximum number of sounds to play together
         self.__max_time = max_time  # maximum amount of seconds the alarm plays
+
+        self.gpio = pigpio.pi()
 
         self.make_alarm_file()
         # check if flag-file to cancel alarm exists and removes it if needed
@@ -249,16 +251,17 @@ class Alarm():
 
     # Setup GPIO button to cancel alarm
     def init_button(self):
-        GPIO.setmode(GPIO.BCM)
+
         # Pin 18 is connected to button
-        GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        self.gpio.set_mode(18, pigpio.INPUT)
+        self.gpio.set_pull_up_down(18, pigpio.PUD_UP)
 
     def cleanup_button(self):
-        GPIO.cleanup()
+        self.gpio.stop()
 
     def is_button_pressed(self):
         # read input of pin 18
-        input = GPIO.input(18)
+        input = self.gpio.read(18)
         if not input:
             print("button pressed")
             self.make_cancel_file()
