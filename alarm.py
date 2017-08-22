@@ -221,7 +221,10 @@ class Alarm():
         return os.path.isfile("cancel_alarm")
 
     def make_cancel_file(self):
-        open("cancel_alarm", "w").close()
+        if self.cancel_file_exists():
+            print("Cancel file already exists")
+        else:
+            open("cancel_alarm", "w").close()
 
     def remove_cancel_file(self):
         os.remove("cancel_alarm")
