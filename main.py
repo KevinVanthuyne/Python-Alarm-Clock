@@ -3,6 +3,7 @@ import os
 import time
 import threading
 import datetime
+import RPi.GPIO as GPIO
 from pygame  import mixer
 
 from alarm import Alarm
@@ -25,6 +26,9 @@ def run():
         input_time = sys.argv[1]  # get alarmtime from command line
         alarm = Alarm(input_time, __path_to_sounds, __fade_in, __wait, __blacklist, __max_sounds, __max_time) # seperate thread for message dialog so alarm can continue running
 
+        # Setup GPIO cancel button
+        alarm.init_button()
+
         # Show popup with when alarm is set and cancel option
         # Not needed when running from php/apache
         # popup = Popup(alarm.get_alarmtime())
@@ -43,7 +47,10 @@ def run():
 
             while mixer.get_busy() and not alarm.cancel_file_exists():
                 # print("playing alarm...")
-                time.sleep(1)
+                # check if cancel button is pressed
+                alarm.is_button_pressed()
+
+                time.sleep(0.2)
 
 
 
@@ -58,6 +65,7 @@ def run():
 
     finally:
         mixer.quit()
+        alarm.cleanup_button()
         try:
             alarm.remove_cancel_file()
             print("Deleted flag file")

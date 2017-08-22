@@ -8,6 +8,7 @@ import re
 import tkinter as tk
 import threading
 import signal
+import RPi.GPIO as GPIO
 
 """ A Raspberry Pi powered alarm clock that wakes you up with
     a random selection of nature sounds """
@@ -97,7 +98,7 @@ class Alarm():
         return datetime.time(getattr(now, 'hour'), getattr(now, 'minute'))
 
 
-    """ Part 3: sound """
+    """ Sound """
 
     def init_mixer(self):
         pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer
@@ -187,11 +188,14 @@ class Alarm():
             if i != 0: # first sounds plays immediately, other sounds start later (randomly)
                 wait = random.randint(self.__wait[0],self.__wait[1]) # seconds to wait to play next sound
 
-                # check every second while waiting if alarm is cancelled
+                # check every 0.2 seconds while waiting if alarm is cancelled
                 s = 0
                 while s < wait and not self.cancel_file_exists():
-                    time.sleep(1)
-                    s += 1
+                    # check if GPIO cancel button is pressed
+                    self.is_button_pressed()
+
+                    time.sleep(0.2)
+                    s += 0.2
 
             # "do ... while" to make sure sound isn't already selected
             # and check if flag file doesn't exist (sleep needs to finish before check can exit loop)
@@ -237,3 +241,24 @@ class Alarm():
     def remove_alarm_file(self):
         os.remove("alarm_set")
         print("alarm file removed")
+
+    """ GPIO cancel button """
+
+    # Setup GPIO button to cancel alarm
+    def init_button(self):
+        GPIO.setmode(GPIO.BCM)
+        # Pin 18 is connected to button
+        GPIO.setup(18, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+    def cleanup_button(self):
+        GPIO.cleanup()
+
+    def is_button_pressed(self):
+        # read input of pin 18
+        input = GPIO.input(18)
+        if not input:
+            print("button pressed")
+            self.make_cancel_file()
+            return True
+
+        return False
