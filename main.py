@@ -26,7 +26,8 @@ def run():
         # Setup GPIO cancel button
         alarm.init_gpio()
 
-        alarm.test_all_sounds()
+        # alarm.test_all_sounds()
+        
         # Show popup with when alarm is set and cancel option
         # Not needed when running from php/apache
         # popup = Popup(alarm.get_alarmtime())

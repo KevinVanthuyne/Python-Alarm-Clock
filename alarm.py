@@ -15,7 +15,6 @@ import pigpio
 
 class Alarm():
 
-    # TODO debug check: play entire sound folder to check on errors
     # TODO overall volume fade-in
     # TODO see log of what's playing on website
 
@@ -350,6 +349,9 @@ class Alarm():
                 except pygame.error:
                     errors.append(file)
 
-        print("\nCan't play files:")
-        for error in errors:
-            print(error)
+        if errors:
+            print("\nCan't play files:")
+            for error in errors:
+                print(error)
+        else:
+            print("\nNo errors found, all files can be played!")
