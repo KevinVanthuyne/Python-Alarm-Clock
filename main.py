@@ -21,10 +21,10 @@ def run():
         __blacklist = ['instruments', 'other folder']
         __max_sounds = 5
         __max_time = 600
+        __volume = 1
 
         input_time = sys.argv[1]  # get alarmtime from command line
-        alarm = Alarm(input_time, __path_to_sounds, __fade_in, __wait, __blacklist, __max_sounds, __max_time) # seperate thread for message dialog so alarm can continue running
-
+        alarm = Alarm(input_time, __path_to_sounds, __fade_in, __wait, __blacklist, __max_sounds, __max_time, __volume)
         # Setup GPIO cancel button
         alarm.init_gpio()
 

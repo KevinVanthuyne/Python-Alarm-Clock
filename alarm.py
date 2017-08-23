@@ -19,7 +19,7 @@ class Alarm():
     # TODO debug check: play entire sound folder to check on errors
     # TODO overall volume fade-in
 
-    def __init__(self, alarmtime, path_to_sounds, fade_in, wait, blacklist, max_sounds, max_time):
+    def __init__(self, alarmtime, path_to_sounds, fade_in, wait, blacklist, max_sounds, max_time, volume):
         # self.__alarmtime = alarmtime  # HH:MM
 
         self.set_alarmtime(alarmtime)
@@ -29,6 +29,7 @@ class Alarm():
         self.__blacklist = blacklist  # folders with sounds not to start with (don't include main folder)
         self.__max_sounds = max_sounds  # maximum number of sounds to play together
         self.__max_time = max_time  # maximum amount of seconds the alarm plays
+        self.__volume = volume  # volume of alarm
 
         self.gpio = pigpio.pi()
 
@@ -207,7 +208,11 @@ class Alarm():
 
                 if sound not in playing and not (i == 0 and self.in_blacklist(sound)):
                     playing.append(sound)
-                    pygame.mixer.Sound(sound).play(loops=-1, fade_ms=self.__fade_in) # play sound on loop with fade in on start
+                    # Make Sound object, set volume and play the sound
+                    pygame_sound = pygame.mixer.Sound(sound)
+                    pygame_sound.set_volume(self.__volume)
+                    pygame_sound.play(loops=-1, fade_ms=self.__fade_in) # play sound on loop with fade in on start
+
                     print("playing: {}".format(sound))
                     break
 
