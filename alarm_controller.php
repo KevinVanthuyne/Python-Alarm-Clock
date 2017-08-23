@@ -68,24 +68,33 @@
             }
 
             // search for every setting in settings file
-            $volume = search_array("volume", $contents);
+            $volume = rtrim(search_array("volume", $contents));
+            // max_time needs to be converted from seconds (for python) to minutes (for the user)
+            $max_time = search_array("max_time", $contents);
+            $max_time_seconds = explode("=", $max_time, 2);
+            $max_time_minutes = $max_time_seconds[1] / 60;
 
-            header("Location: settings.php?" . $volume);
+            header("Location: settings.php?" . $volume . "&max_time=" . $max_time_minutes);
         }
     }
     // write every setting back to the settings file
     elseif ($action == "save_settings") {
         // check input
         $volume = floatval($_POST['volume']);
+        $max_time = $_POST['max_time']; // in minutes
+
         if ($volume < 0 || $volume > 1 ) {
             header("Location: settings.php?info=Volume must be between 0 and 1.");
+        }
+        elseif ($max_time < 1 || $max_time > 30) {
+            header("Location: settings.php?info=Maximum playtime must be between 1 and 30 minutes.");
         }
         else {
             // change settings
             $settings_file = fopen("alarm_settings", "w");
 
-            fwrite($settings_file, "volume=" . $_POST['volume'] . "\n");
-            fwrite($settings_file, "lijn2=1");
+            fwrite($settings_file, "volume=" . $volume . "\n");
+            fwrite($settings_file, "max_time=" . $max_time * 60); // convert minutes to seconds for python
 
             fclose($settings_file);
 

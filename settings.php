@@ -11,9 +11,13 @@
     <?php
         // get settings from setting file
         $volume = 1;
+        $max_time = 600;
 
         if (isset($_GET['volume'])) {
             $volume = $_GET['volume'];
+        }
+        if (isset($_GET['max_time'])) {
+            $max_time = $_GET['max_time'];
         }
     ?>
 
@@ -32,10 +36,11 @@
              ?>
 
             <form action="alarm_controller.php?action=save_settings" method="post">
-                <label for="alarmtime">Volume: </label><input name="volume" id="volume" value="<?= $volume ?>" type="number"  step="0.1" required>
-                <p>
-                    <input type="submit" value="Save settings">
-                </p>
+                <p><label for="volume">Volume: </label><input name="volume" id="volume" value="<?= $volume ?>" type="number" min="0" max="1" step="0.1" required></p>
+
+                <p><label for="max_time">Maximum playtime: </label><input name="max_time" id="max_time" value="<?= $max_time ?>" type="number" min="1" max="30" step="1" required> (min)</p>
+
+                <p><input type="submit" value="Save settings"></p>
             </form>
 
             <a href="index.php"><img src="images/icon-refresh-50.png" alt="back button"></a>

@@ -17,6 +17,7 @@ class Alarm():
 
     # TODO debug check: play entire sound folder to check on errors
     # TODO overall volume fade-in
+    # TODO see log of what's playing on website
 
     # __alarmtime  # time the alarm goes off
     # __path_to_sounds  # folder containing sounds
@@ -27,7 +28,7 @@ class Alarm():
     # __max_time  # maximum amount of seconds the alarm plays
     # __volume  # volume of alarm
 
-    def __init__(self, alarmtime, path_to_sounds, fade_in, wait, blacklist, max_sounds, max_time):
+    def __init__(self, alarmtime, path_to_sounds, fade_in, wait, blacklist, max_sounds):
         # initialise GPIO
         self.gpio = pigpio.pi()
 
@@ -37,7 +38,6 @@ class Alarm():
         self.__wait = wait
         self.__blacklist = blacklist
         self.__max_sounds = max_sounds
-        self.__max_time = max_time
 
         self.make_settings_file()
         self.read_settings()
@@ -71,28 +71,6 @@ class Alarm():
 
     def get_alarmtime(self):
         return self.__alarmtime
-
-    # Return the string from an array that matches a substring
-    def search_array(self, array, substring):
-        for entry in array:
-            if substring in entry:
-                return entry
-
-    # Reads the settings file and sets variables
-    def read_settings(self):
-        # put every line of the file in an array
-        lines = []
-
-        with open("alarm_settings", "r") as settings_file:
-            for line in settings_file:
-                lines.append(line)
-
-        # search every setting in settings file and set self.Variables
-        volume = self.search_array(lines, "volume").split("=", 1)[1] # get value after =
-        self.__volume = float(volume)
-        print("volume setting: {}".format(volume))
-
-
 
 
     """ Alarm """
@@ -290,9 +268,35 @@ class Alarm():
             print("Settings file found")
         else:
             with open("alarm_settings", 'w') as settings_file:
-                settings_file.write("volume=1")
+                settings_file.write("volume=1\n")
+                settings_file.write("max_time=600")
 
                 print("settings file made")
+
+    # Return the string from an array that matches a substring
+    def search_array(self, array, substring):
+        for entry in array:
+            if substring in entry:
+                return entry
+
+    # Reads the settings file and sets variables
+    def read_settings(self):
+        # put every line of the file in an array
+        lines = []
+
+        with open("alarm_settings", "r") as settings_file:
+            for line in settings_file:
+                lines.append(line)
+
+        # search every setting in settings file and set self.Variables
+        volume = self.search_array(lines, "volume").split("=", 1)[1] # get value after =
+        self.__volume = float(volume)
+        print("volume setting: {}".format(volume.rstrip()))
+
+        max_time = self.search_array(lines, "max_time").split("=", 1)[1]
+        self.__max_time = int(max_time)
+        print("Max playtime: {}".format(max_time))
+
 
     """ GPIO cancel button & amplifier control """
 
@@ -327,3 +331,25 @@ class Alarm():
 
     def disable_amplifier(self):
         self.gpio.write(2, 0)
+
+    """ DEBUG """
+
+    # Run this function to test if all sounds are able to be played by Pygame
+    def test_all_sounds(self):
+        self.init_mixer()
+
+        all_files = self.get_files(self.__path_to_sounds)
+        errors = []
+
+        for folder in all_files:
+            for file in folder:
+                try:
+                    print("playing {}".format(file))
+                    pygame.mixer.Sound(file).play()
+                    pygame.mixer.stop()
+                except pygame.error:
+                    errors.append(file)
+
+        print("\nCan't play files:")
+        for error in errors:
+            print(error)
