@@ -15,23 +15,32 @@ import pigpio
 
 class Alarm():
 
-    # TODO maximum time to let alarm play
     # TODO debug check: play entire sound folder to check on errors
     # TODO overall volume fade-in
 
-    def __init__(self, alarmtime, path_to_sounds, fade_in, wait, blacklist, max_sounds, max_time, volume):
-        # self.__alarmtime = alarmtime  # HH:MM
+    # __alarmtime  # time the alarm goes off
+    # __path_to_sounds  # folder containing sounds
+    # __fade_in  # milliseconds to fade in sounds
+    # __wait # min and max seconds to wait to play next sound
+    # __blacklist  # folders with sounds not to start with (don't include main folder)
+    # __max_sounds  # maximum number of sounds to play together
+    # __max_time  # maximum amount of seconds the alarm plays
+    # __volume  # volume of alarm
+
+    def __init__(self, alarmtime, path_to_sounds, fade_in, wait, blacklist, max_sounds, max_time):
+        # initialise GPIO
+        self.gpio = pigpio.pi()
 
         self.set_alarmtime(alarmtime)
-        self.__path_to_sounds = path_to_sounds  # folder containing sounds
-        self.__fade_in = fade_in  # milliseconds to fade in sounds
-        self.__wait = wait # min and max seconds to wait to play next sound
-        self.__blacklist = blacklist  # folders with sounds not to start with (don't include main folder)
-        self.__max_sounds = max_sounds  # maximum number of sounds to play together
-        self.__max_time = max_time  # maximum amount of seconds the alarm plays
-        self.__volume = volume  # volume of alarm
+        self.__path_to_sounds = path_to_sounds
+        self.__fade_in = fade_in
+        self.__wait = wait
+        self.__blacklist = blacklist
+        self.__max_sounds = max_sounds
+        self.__max_time = max_time
 
-        self.gpio = pigpio.pi()
+        self.make_settings_file()
+        self.read_settings()
 
         self.make_alarm_file()
         # check if flag-file to cancel alarm exists and removes it if needed
@@ -62,6 +71,29 @@ class Alarm():
 
     def get_alarmtime(self):
         return self.__alarmtime
+
+    # Return the string from an array that matches a substring
+    def search_array(self, array, substring):
+        for entry in array:
+            if substring in entry:
+                return entry
+
+    # Reads the settings file and sets variables
+    def read_settings(self):
+        # put every line of the file in an array
+        lines = []
+
+        with open("alarm_settings", "r") as settings_file:
+            for line in settings_file:
+                lines.append(line)
+
+        # search every setting in settings file and set self.Variables
+        volume = self.search_array(lines, "volume").split("=", 1)[1] # get value after =
+        self.__volume = float(volume)
+        print("volume setting: {}".format(volume))
+
+
+
 
     """ Alarm """
 
@@ -108,7 +140,6 @@ class Alarm():
         pygame.mixer.init()
         self.enable_amplifier()
         print("Mixer initialised")
-        print("volume: {}".format(pygame.mixer.music.get_volume()))
         print("")
 
     def get_files(self, path):
@@ -252,6 +283,16 @@ class Alarm():
     def remove_alarm_file(self):
         os.remove("alarm_set")
         print("alarm file removed")
+
+    # makes a settings file with default values if there isn't one yet
+    def make_settings_file(self):
+        if os.path.isfile("alarm_settings"):
+            print("Settings file found")
+        else:
+            with open("alarm_settings", 'w') as settings_file:
+                settings_file.write("volume=1")
+
+                print("settings file made")
 
     """ GPIO cancel button & amplifier control """
 

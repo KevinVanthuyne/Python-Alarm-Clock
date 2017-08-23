@@ -6,54 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link rel="icon" href="images/alarm_clock128.png">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Raleway', sans-serif;
-        }
-
-        #background {
-            height: 100vh;
-            width: auto;
-            overflow: hidden;
-            background-image: url(images/background-optimized-1920x1080.jpeg);
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
-        }
-
-        #wrapper {
-            color: white;
-            width: 70%;
-            margin: 0 auto;
-            padding: 1em;
-            text-align: center
-        }
-
-        h1 {
-            font-size: 4em;
-            text-shadow: 0 0 3px black;
-        }
-
-        a {
-            text-decoration: none;
-            color: white;
-        }
-
-        p, label {
-            font-size: 1.7em;
-            text-shadow: 0 0 3px black;
-        }
-
-        input {
-            font-size: 1rem;
-            font-family: 'Raleway', sans-serif;
-        }
-
-        input[type="submit"] {
-            width: 200px
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
@@ -74,19 +27,21 @@
                     echo("<p>" . $_GET['info'] . "<p>");
                 }
             ?>
-            <form action="alarm_controller.php" method="post">
+            <form action="alarm_controller.php?action=set_alarm" method="post">
                 <label for="alarmtime">Alarm time: </label><input name="alarmtime" id="alarmtime" type="time" required>
                 <p>
-                    <input type="submit" name="send" value="Set alarm">
+                    <input type="submit" value="Set alarm">
                 </p>
             </form>
-            <form action="alarm_controller.php" method="post">
+            <form action="alarm_controller.php?action=cancel_alarm" method="post">
                 <p>
-                    <input type="submit" name="send" value="Cancel alarm">
+                    <input type="submit" value="Cancel alarm">
                 </p>
             </form>
 
             <a href="index.php"><img src="images/icon-refresh-50.png" alt="refresh button"></a>
+            <a href="alarm_controller.php?action=settings"><img src="images/gear-50.png" alt="settings button"></a>
+
         </div>
     </div>
 </body>

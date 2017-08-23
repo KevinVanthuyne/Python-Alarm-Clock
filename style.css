@@ -1,0 +1,55 @@
+body {
+    margin: 0;
+    font-family: 'Raleway', sans-serif;
+}
+
+#background {
+    height: 100vh;
+    width: auto;
+    overflow: hidden;
+    background-image: url(images/background-optimized-1920x1080.jpeg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+#wrapper {
+    color: white;
+    width: 70%;
+    margin: 0 auto;
+    padding: 1em;
+    text-align: center;
+}
+
+h1 {
+    font-size: 4em;
+    text-shadow: 0 0 3px black;
+}
+
+h2 {
+    font-size: 2.5em;
+    text-shadow: 0 0 3px black;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+p, label {
+    font-size: 1.7em;
+    text-shadow: 0 0 3px black;
+}
+
+input {
+    font-size: 1rem;
+    font-family: 'Raleway', sans-serif;
+}
+
+input[type="submit"] {
+    width: 200px;
+}
+
+img {
+    margin: 1em;
+}
