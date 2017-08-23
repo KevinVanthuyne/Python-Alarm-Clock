@@ -105,6 +105,7 @@ class Alarm():
     def init_mixer(self):
         pygame.mixer.pre_init(44100, -16, 2, 2048) # setup mixer
         pygame.mixer.init()
+        self.enable_amplifier()
         print("Mixer initialised")
         print("volume: {}".format(pygame.mixer.music.get_volume()))
         print("")
@@ -175,9 +176,6 @@ class Alarm():
         # Stops alarm when max_time is reached
         signal.signal(signal.SIGALRM, self.max_time_handler)
         signal.alarm(self.__max_time)
-
-        # Enables relay to power amplifier
-        self.enable_relay()
 
         files = self.select_random_files()
         playing = [] # sounds already playing
@@ -250,21 +248,21 @@ class Alarm():
         os.remove("alarm_set")
         print("alarm file removed")
 
-    """ GPIO cancel button """
+    """ GPIO cancel button & amplifier control """
 
-    # Setup GPIO button to cancel alarm
-    def init_button(self):
+    # Setup GPIO button to cancel alarm and shutdown amplifier
+    def init_gpio(self):
 
         # Pin 18 is connected to button
         self.gpio.set_mode(18, pigpio.INPUT)
         self.gpio.set_pull_up_down(18, pigpio.PUD_UP)
 
-        # Pin 2 is connected to relay
+        # Pin 2 is connected to amplifier shutdown
         self.gpio.set_mode(2, pigpio.OUTPUT)
-        # hoog zetten?
+        self.disable_amplifier()
 
-    def cleanup_button(self):
-        self.disable_relay()
+    def cleanup_gpio(self):
+        self.enable_amplifier()
         self.gpio.stop()
 
     def is_button_pressed(self):
@@ -278,11 +276,8 @@ class Alarm():
         return False
 
     # Relay is active low
-    def enable_relay(self):
-        self.gpio.write(2, 0)
-
-    def disable_relay(self):
+    def enable_amplifier(self):
         self.gpio.write(2, 1)
 
-    def toggle_relay(self):
-        self.gpio.write(2, not self.gpio.read(2))
+    def disable_amplifier(self):
+        self.gpio.write(2, 0)

@@ -26,7 +26,7 @@ def run():
         alarm = Alarm(input_time, __path_to_sounds, __fade_in, __wait, __blacklist, __max_sounds, __max_time) # seperate thread for message dialog so alarm can continue running
 
         # Setup GPIO cancel button
-        alarm.init_button()
+        alarm.init_gpio()
 
         # Show popup with when alarm is set and cancel option
         # Not needed when running from php/apache
@@ -64,7 +64,7 @@ def run():
 
     finally:
         mixer.quit()
-        alarm.cleanup_button()
+        alarm.cleanup_gpio()
         try:
             alarm.remove_cancel_file()
             print("Deleted flag file")
