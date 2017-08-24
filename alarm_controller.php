@@ -79,6 +79,9 @@
 
             header("Location: settings.php?" . $volume . "&max_time=" . $max_time_minutes);
         }
+        else {
+            header("Location: index.php?info=No settings file found, set an alarm to create one.");
+        }
     }
     // write every setting back to the settings file
     elseif ($action == "save_settings") {
