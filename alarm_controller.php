@@ -4,8 +4,6 @@
 
     echo("action: ".$action."<br>");
 
-    // TODO check input from form
-
     if ($action == "cancel_alarm") {
         // if there's no alarm set, don't do cancel code
         if (!file_exists("alarm_set")) {
@@ -33,16 +31,21 @@
             // if the input is a valid time 00:00 - 23:59
             if (preg_match("/([01]?[0-9]|2[0-3]):[0-5][0-9]/", $alarmtime)) {
                 $cmd = "python3 " . $alarm_folder . "main.py " . $alarmtime;
+                // calculate time until alarm (HH:MM)
+                $now = new DateTime();
+                $difference = date_diff($now, new DateTime($alarmtime));
+                $hours = $difference->format("%h");
+                $minutes = $difference->format("%i");
 
                 // run script, redirect output and error output to log file and run in background(&)
                 echo exec($cmd . " > " . $alarm_folder . "script.log 2>&1 &");
 
                 // sleep until alarm file is set
-                while(!file_exists("alarm_set")) {
-                    sleep(1);
-                }
+                // while(!file_exists("alarm_set")) {
+                //     sleep(1);
+                // }
                 // echo($alarmtime);
-                header("Location: index.php");
+                header("Location: index.php?info=Alarm goes off in " . $hours . " hours and " . $minutes .  " minutes");
             }
             // if the input is invalid
             else {

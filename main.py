@@ -16,8 +16,8 @@ def run():
 
         __alarmtime = ''
         __path_to_sounds = 'sounds'
-        __fade_in = 60000
-        __wait = [30,60]
+        __fade_in = 0
+        __wait = [1,2]
         __blacklist = ['instruments', 'other folder']
         __max_sounds = 5
 
@@ -27,7 +27,7 @@ def run():
         alarm.init_gpio()
 
         # alarm.test_all_sounds()
-        
+
         # Show popup with when alarm is set and cancel option
         # Not needed when running from php/apache
         # popup = Popup(alarm.get_alarmtime())

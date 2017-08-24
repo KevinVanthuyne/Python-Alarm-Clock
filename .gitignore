@@ -2,4 +2,5 @@ sounds/
 __pycache__/
 cancel_alarm
 alarm_set
+alarm_settings
 script.log
