@@ -49,7 +49,7 @@ def run():
                 # check if cancel button is pressed
                 alarm.is_button_pressed()
 
-                time.sleep(0.2)
+                time.sleep(0.1)
 
 
 

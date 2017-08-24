@@ -75,36 +75,6 @@ class Alarm():
 
     """ Alarm """
 
-    def how_long_until(self):
-        """ returns amount of seconds from now until alarmtime.
-            source used: https://pastebin.com/GLL6L2B8     """
-
-        # now = datetime.datetime.now()  # current date & time
-        #
-        # current_date = datetime.date(getattr(now, 'year'), getattr(now, 'month'), getattr(now, 'day'))
-        # current_time = datetime.time(getattr(now, 'hour'), getattr(now, 'minute'))
-        # print("Current time: {} {}".format(current_date, current_time))
-        #
-        # self.__alarmtime = datetime.datetime.strptime(self.__alarmtime, '%H:%M') # makes a datetime object from string as formatted
-        # self.__alarmtime = datetime.time(getattr(self.__alarmtime, 'hour'), getattr(self.__alarmtime, 'minute')) # converts datetime object in time object
-        #
-        # alarmdatetime = datetime.datetime.combine(current_date, self.__alarmtime) # make alarm datetime object with current date and alarmtime
-        #
-        # # DEBUG to make alarm go off immediately
-        # if self.__alarmtime == current_time:
-        #     return 0
-        #
-        # if self.__alarmtime < current_time: # if alarmtime before current time, set alarm for next day
-        #     alarmdatetime += datetime.timedelta(hours=24)
-        #
-        # time_to_alarm = alarmdatetime - now
-        #
-        # print("Alarm time: {}".format(alarmdatetime))
-        # print("Alarm goes of in {} (h:m:s)\n".format(time.strftime('%H:%M:%S', time.gmtime(time_to_alarm.seconds))))
-        #
-        # return time_to_alarm.seconds
-
-        return 5000
 
     def now(self):
         now = datetime.datetime.now()
@@ -192,23 +162,19 @@ class Alarm():
 
         self.make_blacklist()
 
-        # TODO random sleep until next sound
-        # fade-in (eerste lang (5min ), daarna random en korter? (1min))
-        # maybe fade-out and replace with other sound
-
         for i in range(len(files)): # for the number of selected sounds
 
             if i != 0: # first sounds plays immediately, other sounds start later (randomly)
                 wait = random.randint(self.__wait[0],self.__wait[1]) # seconds to wait to play next sound
 
-                # check every 0.2 seconds while waiting if alarm is cancelled
+                # check every 0.1 seconds while waiting if alarm is cancelled
                 s = 0
                 while s < wait and not self.cancel_file_exists():
                     # check if GPIO cancel button is pressed
                     self.is_button_pressed()
 
-                    time.sleep(0.2)
-                    s += 0.2
+                    time.sleep(0.1)
+                    s += 0.1
 
             # "do ... while" to make sure sound isn't already selected
             # and check if flag file doesn't exist (sleep needs to finish before check can exit loop)
