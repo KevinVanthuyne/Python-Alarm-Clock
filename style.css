@@ -6,7 +6,7 @@ body {
 #background {
     height: 100vh;
     width: auto;
-    overflow: hidden;
+    overflow: auto;
     background-image: url(images/background-optimized-1920x1080.jpeg);
     background-repeat: no-repeat;
     background-attachment: fixed;

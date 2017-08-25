@@ -16,8 +16,9 @@ import pigpio
 class Alarm():
 
     # TODO overall volume fade-in
-    # TODO see difference of time in browser
-    # TODO see log of what's playing on website
+    # TODO see log of what is playing/has been played on website
+    # TODO setting multiple alarms?
+
 
     # __alarmtime  # time the alarm goes off
     # __path_to_sounds  # folder containing sounds
