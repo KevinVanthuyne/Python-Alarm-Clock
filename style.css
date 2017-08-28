@@ -46,7 +46,7 @@ input {
     font-family: 'Raleway', sans-serif;
 }
 
-input[type="submit"] {
+input[type="submit"], hr {
     width: 200px;
 }
 

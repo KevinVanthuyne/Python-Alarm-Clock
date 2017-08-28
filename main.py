@@ -17,7 +17,7 @@ def run():
         __alarmtime = ''
         __path_to_sounds = 'sounds'
         __fade_in = 60000
-        __wait = [20,40]
+        __wait = [2,4]
         __blacklist = ['instruments', 'other folder']
         __max_sounds = 5
 

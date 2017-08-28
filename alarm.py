@@ -162,6 +162,8 @@ class Alarm():
         playing = [] # sounds already playing
 
         self.make_blacklist()
+        # Remove current played sounds file to make new one
+        self.remove_played_sounds_file()
 
         for i in range(len(files)): # for the number of selected sounds
 
@@ -190,6 +192,10 @@ class Alarm():
                     pygame_sound.play(loops=-1, fade_ms=self.__fade_in) # play sound on loop with fade in on start
 
                     print("playing: {}".format(sound))
+                    # TODO
+                    # add playing sound to file
+                    self.add_played_sound(sound)
+
                     break
 
     # Stops alarm when max_time is reached
@@ -264,6 +270,22 @@ class Alarm():
         self.__max_time = int(max_time)
         print("Max playtime: {}".format(max_time))
 
+    def add_played_sound(self, sound):
+        # if there is no file, create one
+        # if not os.path.isfile("played_sounds"):
+        #     open("played_sounds", "w").close()
+        #     print("played_sounds file created")
+
+        # add sound to file
+        with open("played_sounds", "a") as played_sounds_file:
+            played_sounds_file.write(sound + "\n");
+
+    def remove_played_sounds_file(self):
+        if os.path.isfile("played_sounds"):
+            os.remove("played_sounds")
+            print("played_sounds file removed")
+        else:
+            print("no played_sounds file found")
 
     """ GPIO cancel button & amplifier control """
 
