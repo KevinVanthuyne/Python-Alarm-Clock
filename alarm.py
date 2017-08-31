@@ -271,11 +271,8 @@ class Alarm():
         print("Max playtime: {}".format(max_time))
 
     def add_played_sound(self, sound):
-        # if there is no file, create one
-        # if not os.path.isfile("played_sounds"):
-        #     open("played_sounds", "w").close()
-        #     print("played_sounds file created")
-
+        # remove root folder
+        sound = sound.split("/", 1)[1]
         # add sound to file
         with open("played_sounds", "a") as played_sounds_file:
             played_sounds_file.write(sound + "\n");

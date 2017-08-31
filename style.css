@@ -46,10 +46,17 @@ input {
     font-family: 'Raleway', sans-serif;
 }
 
-input[type="submit"], hr {
+input[type="submit"] {
     width: 200px;
 }
 
 img {
     margin: 1em;
+    clear: both;
+}
+
+ul {
+    line-height: 1.5em;
+    text-shadow: 0 0 3px black;
+    list-style: none;
 }
