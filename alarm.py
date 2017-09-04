@@ -293,12 +293,13 @@ class Alarm():
         self.gpio.set_mode(18, pigpio.INPUT)
         self.gpio.set_pull_up_down(18, pigpio.PUD_UP)
 
-        # Pin 2 is connected to amplifier shutdown
-        self.gpio.set_mode(2, pigpio.OUTPUT)
+        # Pin 14 is connected to amplifier shutdown
+        self.gpio.set_mode(14, pigpio.OUTPUT)
         self.disable_amplifier()
 
     def cleanup_gpio(self):
-        self.enable_amplifier()
+        # self.enable_amplifier()
+        self.disable_amplifier()
         self.gpio.stop()
 
     def is_button_pressed(self):
@@ -311,12 +312,11 @@ class Alarm():
 
         return False
 
-    # Relay is active low
     def enable_amplifier(self):
-        self.gpio.write(2, 1)
+        self.gpio.write(14, 1)
 
     def disable_amplifier(self):
-        self.gpio.write(2, 0)
+        self.gpio.write(14, 0)
 
     """ DEBUG """
 
