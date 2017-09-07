@@ -289,22 +289,29 @@ class Alarm():
     # Setup GPIO button to cancel alarm and shutdown amplifier
     def init_gpio(self):
 
-        # Pin 18 is connected to button
-        self.gpio.set_mode(18, pigpio.INPUT)
-        self.gpio.set_pull_up_down(18, pigpio.PUD_UP)
+        # GPIO13 / pin 33 is connected to stop-alarm button
+        self.gpio.set_mode(13, pigpio.INPUT)
+        self.gpio.set_pull_up_down(13, pigpio.PUD_UP)
 
-        # Pin 14 is connected to amplifier shutdown
+        # GPIO14 / pin 8 is connected to amplifier shutdown
         self.gpio.set_mode(14, pigpio.OUTPUT)
         self.disable_amplifier()
+
+        # GPIO5 / pin 29 is connected to a LED
+        self.gpio.set_mode(5, pigpio.OUTPUT)
+        # Enable LED to indicate alarm is set
+        self.enable_LED()
 
     def cleanup_gpio(self):
         # self.enable_amplifier()
         self.disable_amplifier()
+        # Disable LED to indicate alarm is cancelled
+        self.disable_LED()
         self.gpio.stop()
 
     def is_button_pressed(self):
         # read input of pin 18
-        input = self.gpio.read(18)
+        input = self.gpio.read(13)
         if not input:
             print("button pressed")
             self.make_cancel_file()
@@ -317,6 +324,17 @@ class Alarm():
 
     def disable_amplifier(self):
         self.gpio.write(14, 0)
+
+    def enable_LED(self):
+        self.gpio.write(5, 1)
+
+    def disable_LED(self):
+        self.gpio.write(5, 0)
+
+    def set_LED(self, state):
+        if state == 0 or state == 1:
+            self.gpio.write(5, state)
+
 
     """ DEBUG """
 

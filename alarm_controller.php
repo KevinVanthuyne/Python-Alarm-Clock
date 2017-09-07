@@ -33,9 +33,20 @@
                 $cmd = "python3 " . $alarm_folder . "main.py " . $alarmtime;
                 // calculate time until alarm (HH:MM)
                 $now = new DateTime();
-                $difference = date_diff($now, new DateTime($alarmtime));
-                $hours = $difference->format("%h");
-                $minutes = $difference->format("%i");
+                $alarmtime_object = new DateTime($alarmtime);
+                $difference = $now->diff($alarmtime_object);
+
+                echo($difference->format("%H:%i"));
+                // TODO
+                // if alarm time is earlier, time difference needs to be until tomorrow
+                if ($alarmtime_object->format("Hi") < $now->format("Hi")) {
+                    echo("alarm is earlier");
+                    $one_day = new DateTime("24:00");
+                    $difference = date_sub();
+                }
+                else {
+                    echo("alarm is later");
+                }
 
                 // run script, redirect output and error output to log file and run in background(&)
                 echo exec($cmd . " > " . $alarm_folder . "script.log 2>&1 &");
@@ -44,7 +55,7 @@
                 // while(!file_exists("alarm_set")) {
                 //     sleep(1);
                 // }
-                // echo($alarmtime);
+                //echo("alarm goes off in " . $hours . " and " . $minutes);
                 header("Location: index.php?info=Alarm goes off in " . $hours . " hours and " . $minutes .  " minutes");
             }
             // if the input is invalid

@@ -31,8 +31,13 @@ def shutdown(self):
     display.clear()
     display.write_display()
 
-    # os.system("sudo shutdown -h now")
-    os.system("sudo reboot")
+    # remove alarm_set if there is one
+    if os.path.isfile("alarm_set"):
+        os.remove("alarm_set")
+        print("Shutdown: alarm_set removed")
+
+    os.system("sudo shutdown -h now")
+    # os.system("sudo reboot")
 
 GPIO.add_event_detect(21, GPIO.FALLING, callback=shutdown, bouncetime=2000)
 

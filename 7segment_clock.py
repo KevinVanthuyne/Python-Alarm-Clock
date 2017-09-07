@@ -34,10 +34,6 @@ while(True):
   # Toggle colon
   segment.set_colon(second % 2)              # Toggle colon at 1Hz
 
-  # Check if an alarm is set
-  if os.path.isfile("alarm_set"):
-      segment.set_decimal(3, True)
-
   # Write the display buffer to the hardware.  This must be called to
   # update the actual display LEDs.
   segment.write_display()
