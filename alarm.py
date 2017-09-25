@@ -18,6 +18,8 @@ class Alarm():
     # TODO overall volume fade-in
     # TODO see log of what is playing/has been played on website
     # TODO setting multiple alarms?
+    # TODO press button to see when alarm is set
+    # TODO long press for shutdown
 
 
     # __alarmtime  # time the alarm goes off

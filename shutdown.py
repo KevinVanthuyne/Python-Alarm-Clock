@@ -3,13 +3,21 @@ import time
 import os
 from Adafruit_LED_Backpack import SevenSegment
 
+shutdown_pin_nr = 21
+
 # default open button needs to be connected to GPIO3 and a Ground pin
 # when these pins are shortened, the Pi wakes from a halted state
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(21, GPIO.IN, pull_up_down = GPIO.PUD_UP)
+GPIO.setup(shutdown_pin_nr, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 def shutdown(self):
+    # long press button to shut down
+    for i in range(10):
+        time.sleep(0.1)
+        if GPIO.input(shutdown_pin_nr) == 1: # button not held down
+          return
+
     print("Shutting down...")
     GPIO.cleanup()
     # kill clock script
@@ -36,8 +44,7 @@ def shutdown(self):
         os.remove("alarm_set")
         print("Shutdown: alarm_set removed")
 
-    os.system("sudo shutdown -h now")
-    # os.system("sudo reboot")
+    # os.system("sudo shutdown -h now")
 
 GPIO.add_event_detect(21, GPIO.FALLING, callback=shutdown, bouncetime=2000)
 
