@@ -5,10 +5,11 @@ import time
 import datetime
 import sys
 import re
-import tkinter as tk
-import threading
+# import tkinter as tk
+# import threading
 import signal
 import pigpio
+from Adafruit_LED_Backpack import SevenSegment
 
 """ A Raspberry Pi powered alarm clock that wakes you up with
     a random selection of nature sounds """
@@ -19,13 +20,12 @@ class Alarm():
     # TODO see log of what is playing/has been played on website
     # TODO setting multiple alarms?
     # TODO press button to see when alarm is set
-    # TODO long press for shutdown
 
 
     # __alarmtime  # time the alarm goes off
     # __path_to_sounds  # folder containing sounds
     # __fade_in  # milliseconds to fade in sounds
-    # __wait # min and max seconds to wait to play next sound
+    # __wait  # min and max seconds to wait to play next sound
     # __blacklist  # folders with sounds not to start with (don't include main folder)
     # __max_sounds  # maximum number of sounds to play together
     # __max_time  # maximum amount of seconds the alarm plays
@@ -311,8 +311,23 @@ class Alarm():
         self.disable_LED()
         self.gpio.stop()
 
+    def check_alarm_button(self):
+        input = self.gpio.read(13)
+        if not input:
+            print("button pressed")
+            # show alarm time on display
+            segment = SevenSegment.SevenSegment(address=0x70)
+            segment.begin()
+            segment.set_brightness(0)
+
+            segment.print_number_str("{}{}".format(self.get_alarmtime().hour, self.get_alarmtime().minute))
+            segment.set_colon(True)
+            segment.write_display()
+
+            time.sleep(1)
+
     def is_button_pressed(self):
-        # read input of pin 18
+        # read input of pin 13
         input = self.gpio.read(13)
         if not input:
             print("button pressed")

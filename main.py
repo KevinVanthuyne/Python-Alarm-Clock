@@ -6,7 +6,7 @@ import datetime
 from pygame  import mixer
 
 from alarm import Alarm
-from popup import Popup
+# from popup import Popup
 
 """ Sets an alarm and shows a popup for when the alarm is set.
     At the given time, alarm goes off """
@@ -35,6 +35,9 @@ def run():
         # check if alarmtime == current time or if flag file exists to cancel alarm
         while (alarm.now() != alarm.get_alarmtime() and not alarm.cancel_file_exists()):
             # print("sleeping until alarm...")
+
+            # setup alarm button to see when alarm is set when pressed
+            alarm.check_alarm_button()
             time.sleep(1)
 
         # make alarm go off if flag file doesn't exist

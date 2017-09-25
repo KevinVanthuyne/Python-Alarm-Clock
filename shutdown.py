@@ -44,7 +44,7 @@ def shutdown(self):
         os.remove("alarm_set")
         print("Shutdown: alarm_set removed")
 
-    # os.system("sudo shutdown -h now")
+    os.system("sudo shutdown -h now")
 
 GPIO.add_event_detect(21, GPIO.FALLING, callback=shutdown, bouncetime=2000)
 
