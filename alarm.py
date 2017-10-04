@@ -320,7 +320,10 @@ class Alarm():
             segment.begin()
             segment.set_brightness(0)
 
-            segment.print_number_str("{}{}".format(self.get_alarmtime().hour, self.get_alarmtime().minute))
+            if self.get_alarmtime().minute == 0:
+                minutes_formatted = "00"
+
+            segment.print_number_str("{}{}".format(self.get_alarmtime().hour, minutes_formatted))
             segment.set_colon(True)
             segment.write_display()
 
