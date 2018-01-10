@@ -40,3 +40,8 @@ while(True):
 
   # Wait a quarter second (less than 1 second to prevent colon blinking getting$
   time.sleep(0.5)
+
+  # Check if show alarm button is pressed and pauze
+  if os.path.isfile("show_alarm"):
+      print("show_alarm file detected")
+      time.sleep(2)
