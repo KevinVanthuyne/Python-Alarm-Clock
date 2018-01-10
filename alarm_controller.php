@@ -34,19 +34,20 @@
                 // calculate time until alarm (HH:MM)
                 $now = new DateTime();
                 $alarmtime_object = new DateTime($alarmtime);
-                $difference = $now->diff($alarmtime_object);
 
-                echo($difference->format("%H:%i"));
                 // TODO
                 // if alarm time is earlier, time difference needs to be until tomorrow
-                if ($alarmtime_object->format("Hi") < $now->format("Hi")) {
-                    echo("alarm is earlier");
-                    $one_day = new DateTime("24:00");
-                    $difference = date_sub();
+                // h = hours, i = minutes
+                if ($alarmtime_object->format("hi") < $now->format("hi")) {
+                    echo("alarm is tomorrow, in: ");
+                    $next_day = $alarmtime_object->modify("+1 day");
+                    $time_until = $now->diff($next_day);
                 }
                 else {
-                    echo("alarm is later");
+                    echo("alarm is later today, in: ");
+                    $time_until = $now->diff($alarmtime_object);
                 }
+                $time_until = $time_until->format("%h:%I");
 
                 // run script, redirect output and error output to log file and run in background(&)
                 echo exec($cmd . " > " . $alarm_folder . "script.log 2>&1 &");
@@ -55,8 +56,8 @@
                 // while(!file_exists("alarm_set")) {
                 //     sleep(1);
                 // }
-                //echo("alarm goes off in " . $hours . " and " . $minutes);
-                header("Location: index.php?info=Alarm goes off in " . $hours . " hours and " . $minutes .  " minutes");
+                //echo("alarm goes off in " . $time_until);
+                header("Location: index.php?info=Alarm goes off in " . $time_until);
             }
             // if the input is invalid
             else {
